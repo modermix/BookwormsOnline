@@ -16,7 +16,7 @@ namespace BookwormsOnline.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BookwormsOnline.Models.Tutorial", b =>
@@ -76,6 +76,10 @@ namespace BookwormsOnline.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("ProfileImage")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NanoidDotNet;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -16,7 +17,7 @@ namespace BookwormsOnline.Controllers
         private readonly IConfiguration _configuration = configuration;
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequest request)
+        public IActionResult Register([FromForm] RegisterRequest request, [FromForm] IFormFile? file)
         {
             // Trim string values
             request.Name = request.Name.Trim();
@@ -31,6 +32,23 @@ namespace BookwormsOnline.Controllers
                 return BadRequest(new { message });
             }
 
+            // Handle file upload if file is provided
+            string? imageFile = null;
+            if (file != null)
+            {
+                if (file.Length > 1024 * 1024) // Max file size 1MB
+                {
+                    return BadRequest(new { message = "Maximum file size is 1MB" });
+                }
+
+                // Using your existing FileController's logic
+                var id = Nanoid.Generate(size: 10);
+                imageFile = id + Path.GetExtension(file.FileName);
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot/uploads", imageFile);
+                using var fileStream = new FileStream(imagePath, FileMode.Create);
+                file.CopyTo(fileStream);
+            }
+
             // Create user object
             var now = DateTime.Now;
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -40,7 +58,8 @@ namespace BookwormsOnline.Controllers
                 Email = request.Email,
                 Password = passwordHash,
                 CreatedAt = now,
-                UpdatedAt = now
+                UpdatedAt = now,
+                ProfileImage = imageFile // Store the profile image filename
             };
 
             // Add user
@@ -74,7 +93,8 @@ namespace BookwormsOnline.Controllers
             {
                 foundUser.Id,
                 foundUser.Email,
-                foundUser.Name
+                foundUser.Name,
+                foundUser.ProfileImage // Include the profile image filename
             };
             string accessToken = CreateToken(foundUser);
             return Ok(new { user, accessToken });

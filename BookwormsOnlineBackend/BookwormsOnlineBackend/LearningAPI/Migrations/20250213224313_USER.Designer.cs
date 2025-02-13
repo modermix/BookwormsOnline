@@ -11,15 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookwormsOnline.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230823103535_AddImageFile")]
-    partial class AddImageFile
+    [Migration("20250213224313_USER")]
+    partial class USER
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("BookwormsOnline.Models.Tutorial", b =>
@@ -79,6 +79,10 @@ namespace BookwormsOnline.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("ProfileImage")
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 

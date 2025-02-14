@@ -17,8 +17,8 @@ POST {{BookwormsOnline_HostAddress}}/user/login
 Content-Type: application/json
 
 {
- "email": "li_haiyun@nyp.edu.sg",
- "password": "password123"
+ "email": "XuanHaiHai1!@nyp.edu.sg",
+ "password": "XuanHaiHai1!"
 }
 
 

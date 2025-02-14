@@ -6,10 +6,14 @@ import * as yup from 'yup';
 import http from '../http';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 function Register() {
     const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
+    const [recaptchaToken, setRecaptchaToken] = useState('');
+
+    const RECAPTCHA_SITE_KEY = '6Lc60dYqAAAAAFSAUz302jaY0DaPozABHxZgZT-j'; // Add your site key here
 
     const formik = useFormik({
         initialValues: {

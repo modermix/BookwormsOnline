@@ -12,7 +12,7 @@ namespace BookwormsOnline.Models
         [MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
-        [MinLength(15), MaxLength(255)]
+        [MinLength(15), MaxLength(100)]
         public string CreditCardNo { get; set; } = string.Empty;
 
         [MinLength(8), MaxLength(8)]

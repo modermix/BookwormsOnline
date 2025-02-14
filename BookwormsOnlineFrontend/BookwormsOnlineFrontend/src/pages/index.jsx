@@ -29,30 +29,35 @@ const Index = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading message while fetching data
+    return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', textAlign: 'center', paddingTop: '80px' }}>Loading...</div>; // Show a loading message while fetching data
   }
 
   if (!user) {
-    return <div>Please log in to see your profile.</div>; // If user is not logged in
+    return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', textAlign: 'center', paddingTop: '80px' }}>Please log in to see your profile.</div>; // If user is not logged in
   }
 
   return (
     <div>
       {/* Content */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', textAlign: 'center', paddingTop: '80px' }}>
-        <img src="../assets/BookwormsOnline.png" alt="Bookworms" style={{ width: '150px', height: 'auto', marginBottom: '20px' }} />
-        <h1 style={{ fontWeight: 'bold', color: '#333' }}>Bookworms Online</h1>
-
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', textAlign: 'center', paddingTop: '80px' }}>
         {/* Display User Details */}
         <div style={{ marginTop: '20px' }}>
-          <h3>Welcome, {user.name}</h3>
-          <p>Email: {user.email}</p>
-          <p>Billing Address: {user.billingAddress}</p>
-          <p>Shipping Address: {user.shippingAddress}</p>
-          {/* You can also include profile image if necessary */}
-          {user.profileImage && (
-            <img src={`/uploads/${user.profileImage}`} alt="Profile" style={{ width: '100px', height: 'auto', marginTop: '10px' }} />
-          )}
+            {/* Profile Image */}
+            {user.profileImage && (
+              <img
+                src={`https://localhost:7004/uploads/${user.profileImage}`}
+                alt="Profile"
+                style={{ width: '200px', height: 'auto', marginTop: '10px' }}
+              />
+            )}
+            <h3>Welcome, {user.name}</h3>
+            <p>Email: {user.email}</p>
+            <p>Mobile No: {user.mobileNo}</p>
+            <p>Billing Address: {user.billingAddress}</p>
+            <p>Shipping Address: {user.shippingAddress}</p>
+            <p>Credit Card Number: {user.creditCardNo}</p>
+            <p>Password: {user.password}</p>
+            
         </div>
       </div>
     </div>

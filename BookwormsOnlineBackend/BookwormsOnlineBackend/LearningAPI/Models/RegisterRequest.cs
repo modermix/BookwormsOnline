@@ -28,7 +28,7 @@ namespace BookwormsOnline.Models
         [MaxLength(100)]
         public string? ProfileImage { get; set; }
 
-        [Required, MinLength(8), MaxLength(255)]
+        [Required, MinLength(8), MaxLength(100)]
         [RegularExpression(@"^\d+$", ErrorMessage = "Credit Card No must be numeric.")]
         public string CreditCardNo { get; set; } = string.Empty;
 

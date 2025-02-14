@@ -112,7 +112,12 @@ namespace BookwormsOnline.Controllers
                 foundUser.Id,
                 foundUser.Email,
                 foundUser.Name,
-                foundUser.ProfileImage // Include the profile image filename
+                foundUser.MobileNo,          // Include mobile number
+                foundUser.BillingAddress,    // Include billing address
+                foundUser.ShippingAddress,   // Include shipping address
+                foundUser.ProfileImage,
+                foundUser.Password,
+                foundUser.CreditCardNo
             };
             string accessToken = CreateToken(foundUser);
             return Ok(new { user, accessToken });
@@ -128,13 +133,21 @@ namespace BookwormsOnline.Controllers
             var email = User.Claims.Where(c => c.Type == ClaimTypes.Email)
                 .Select(c => c.Value).SingleOrDefault();
 
-            if (id != 0 && name != null && email != null)
+            var foundUser = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if (foundUser != null)
             {
                 var user = new
                 {
-                    id,
-                    email,
-                    name
+                    id = foundUser.Id,
+                    name = foundUser.Name,
+                    email = foundUser.Email,
+                    mobileNo = foundUser.MobileNo,
+                    billingAddress = foundUser.BillingAddress,
+                    shippingAddress = foundUser.ShippingAddress,
+                    profileImage = foundUser.ProfileImage, // Include the profile image filename
+                    password = foundUser.Password,
+                    creditCardNo = foundUser.CreditCardNo
                 };
                 return Ok(new { user });
             }

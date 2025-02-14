@@ -100,11 +100,28 @@ namespace BookwormsOnline.Controllers
             {
                 return BadRequest(new { message });
             }
+
+            if (foundUser.LockoutEnd > DateTime.Now)
+            {
+                return BadRequest(new { message = "Account is locked. Please try again later." });
+            }
+
             bool verified = BCrypt.Net.BCrypt.Verify(request.Password, foundUser.Password);
             if (!verified)
             {
+                foundUser.FailedLoginAttempts++;
+                if (foundUser.FailedLoginAttempts >= 3)
+                {
+                    foundUser.LockoutEnd = DateTime.Now.AddMinutes(5); // Lock account for 15 minutes
+                }
+                _context.SaveChanges();
                 return BadRequest(new { message });
             }
+
+            foundUser.FailedLoginAttempts = 0;
+            foundUser.LockoutEnd = null;
+            _context.SaveChanges();
+
 
             // Return user info
             var user = new
@@ -168,7 +185,7 @@ namespace BookwormsOnline.Controllers
             int tokenExpiresDays = _configuration.GetValue<int>("Authentication:TokenExpiresDays");
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secret);
+            var key = Encoding.ASCII    .GetBytes(secret);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

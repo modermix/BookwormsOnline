@@ -43,6 +43,12 @@ namespace BookwormsOnline.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int>("FailedLoginAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("datetime");
+
                     b.Property<string>("MobileNo")
                         .IsRequired()
                         .HasMaxLength(8)

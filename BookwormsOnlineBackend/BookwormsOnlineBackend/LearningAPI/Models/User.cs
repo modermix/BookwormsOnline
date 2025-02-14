@@ -40,5 +40,10 @@ namespace BookwormsOnline.Models
         [MaxLength(100)]
         public string? ProfileImage { get; set; }
 
+        public int FailedLoginAttempts { get; set; } = 0;
+
+        [Column(TypeName = "datetime")]
+        public DateTime? LockoutEnd { get; set; }
+
     }
 }

@@ -1,0 +1,30 @@
+﻿@BookwormsOnline_HostAddress = https://localhost:7004
+@token = 1jhQZ0BbWg8pFa4HeLCqe250auObyXFqyKCyocUGieGjt2VQepl95lSYBfLAclsZ
+
+
+POST {{BookwormsOnline_HostAddress}}/user/register
+Content-Type: application/json
+
+{
+ "name": "Li Haiyun",
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+###
+
+POST {{BookwormsOnline_HostAddress}}/user/login
+Content-Type: application/json
+
+{
+ "email": "li_haiyun@nyp.edu.sg",
+ "password": "password123"
+}
+
+
+###
+
+GET {{BookwormsOnline_HostAddress}}/user/auth
+Authorization: Bearer {{token}}
+
+###

@@ -15,9 +15,6 @@ namespace BookwormsOnline
                 optionsBuilder.UseMySQL(connectionString);
             }
         }
-
-        public required DbSet<Tutorial> Tutorials { get; set; }
-
         public required DbSet<User> Users { get; set; }
     }
 }

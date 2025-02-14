@@ -28,8 +28,5 @@ namespace BookwormsOnline.Models
         [MaxLength(100)]
         public string? ProfileImage { get; set; }
 
-        // Navigation property to represent the one-to-many relationship
-        [JsonIgnore]
-        public List<Tutorial>? Tutorials { get; set; }
     }
 }

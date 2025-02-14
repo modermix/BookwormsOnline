@@ -20,9 +20,16 @@ namespace BookwormsOnline.Controllers
         public IActionResult Register([FromForm] RegisterRequest request, [FromForm] IFormFile? file)
         {
             // Trim string values
-            request.Name = request.Name.Trim();
+            request.FirstName = request.FirstName.Trim();
+            request.LastName = request.LastName.Trim();
             request.Email = request.Email.Trim().ToLower();
             request.Password = request.Password.Trim();
+            request.CreditCardNo = request.CreditCardNo.Trim();
+            request.MobileNo = request.MobileNo.Trim();
+            request.BillingAddress = request.BillingAddress.Trim();
+            request.ShippingAddress = request.ShippingAddress.Trim();
+
+            string fullName = request.FirstName + " " + request.LastName;
 
             // Check email
             var foundUser = _context.Users.Where(x => x.Email == request.Email).FirstOrDefault();
@@ -36,6 +43,12 @@ namespace BookwormsOnline.Controllers
             string? imageFile = null;
             if (file != null)
             {
+                var fileExtension = Path.GetExtension(file.FileName).ToLower();
+                if (fileExtension != ".jpg")
+                {
+                    return BadRequest(new { message = "Only .jpg files are allowed." });
+                }
+
                 if (file.Length > 1024 * 1024) // Max file size 1MB
                 {
                     return BadRequest(new { message = "Maximum file size is 1MB" });
@@ -52,14 +65,19 @@ namespace BookwormsOnline.Controllers
             // Create user object
             var now = DateTime.Now;
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            string creditcardHash = BCrypt.Net.BCrypt.HashPassword(request.CreditCardNo);
             var user = new User()
             {
-                Name = request.Name,
+                Name = fullName,
                 Email = request.Email,
                 Password = passwordHash,
                 CreatedAt = now,
                 UpdatedAt = now,
-                ProfileImage = imageFile // Store the profile image filename
+                ProfileImage = imageFile, // Store the profile image filename
+                CreditCardNo = creditcardHash,
+                MobileNo = request.MobileNo,
+                BillingAddress = request.BillingAddress,
+                ShippingAddress = request.ShippingAddress
             };
 
             // Add user

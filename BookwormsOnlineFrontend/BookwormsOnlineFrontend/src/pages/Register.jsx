@@ -13,18 +13,27 @@ function Register() {
 
     const formik = useFormik({
         initialValues: {
-            name: "",
+            firstName: "",
+            lastName: "",
             email: "",
             password: "",
-            confirmPassword: ""
+            confirmPassword: "",
+            creditCardNo: "",
+            mobileNo: "",
+            billingAddress: "",
+            shippingAddress: ""
         },
         validationSchema: yup.object({
-            name: yup.string().trim()
-                .min(3, 'Name must be at least 3 characters')
-                .max(50, 'Name must be at most 50 characters')
-                .required('Name is required')
-                .matches(/^[a-zA-Z '-,.]+$/,
-                    "Name only allows letters, spaces, and characters: ' - , ."),
+            firstName: yup.string().trim()
+                .min(3, 'First Name must be at least 3 characters')
+                .max(50, 'First Name must be at most 50 characters')
+                .required('First Name is required')
+                .matches(/^[a-zA-Z '-,.]+$/, "First Name only allows letters, spaces, and characters: ' - , ."),
+            lastName: yup.string().trim()
+                .min(3, 'Last Name must be at least 3 characters')
+                .max(50, 'Last Name must be at most 50 characters')
+                .required('Last Name is required')
+                .matches(/^[a-zA-Z '-,.]+$/, "Last Name only allows letters, spaces, and characters: ' - , ."),
             email: yup.string().trim()
                 .email('Enter a valid email')
                 .max(50, 'Email must be at most 50 characters')
@@ -33,24 +42,44 @@ function Register() {
                 .min(8, 'Password must be at least 8 characters')
                 .max(50, 'Password must be at most 50 characters')
                 .required('Password is required')
-                .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/,
-                    "Password must contain at least 1 letter and 1 number"),
+                .matches(/^(?=.*[a-zA-Z])(?=.*[0-9]).{8,}$/, "Password must contain at least 1 letter and 1 number"),
             confirmPassword: yup.string().trim()
                 .required('Confirm password is required')
-                .oneOf([yup.ref('password')], 'Passwords must match')
+                .oneOf([yup.ref('password')], 'Passwords must match'),
+            creditCardNo: yup.string().trim()
+                .min(15, 'Credit Card No must be at least 15 digits')
+                .max(19, 'Credit Card No must be at most 19 digits')
+                .required('Credit Card No is required')
+                .matches(/^\d+$/, "Credit Card No must be numeric"),
+            mobileNo: yup.string().trim()
+                .length(8, 'Mobile No must be exactly 8 digits')
+                .required('Mobile No is required')
+                .matches(/^\d+$/, "Mobile No must be numeric"),
+            billingAddress: yup.string().trim()
+                .max(255, 'Billing Address must be at most 255 characters')
+                .required('Billing Address is required'),
+            shippingAddress: yup.string().trim()
+                .max(255, 'Shipping Address must be at most 255 characters')
+                .required('Shipping Address is required')
         }),
         onSubmit: (data) => {
-            data.name = data.name.trim();
+            // Trim string values and format as necessary
+            data.firstName = data.firstName.trim();
+            data.lastName = data.lastName.trim();
             data.email = data.email.trim().toLowerCase();
             data.password = data.password.trim();
 
             const formData = new FormData();
-            formData.append('name', data.name);
+            formData.append('firstName', data.firstName);
+            formData.append('lastName', data.lastName);
             formData.append('email', data.email);
             formData.append('password', data.password);
             formData.append('confirmPassword', data.confirmPassword);
-            
-            // Include the image file if selected
+            formData.append('creditCardNo', data.creditCardNo);
+            formData.append('mobileNo', data.mobileNo);
+            formData.append('billingAddress', data.billingAddress);
+            formData.append('shippingAddress', data.shippingAddress);
+
             if (imageFile) {
                 formData.append("file", imageFile);
             }
@@ -61,7 +90,6 @@ function Register() {
                 }
             })
             .then((res) => {
-                console.log(res.data);
                 navigate("/login");
             })
             .catch(function (err) {
@@ -73,6 +101,12 @@ function Register() {
     const onFileChange = (e) => {
         let file = e.target.files[0];
         if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (fileExtension !== 'jpg') {
+                toast.error('Only .jpg files are allowed');
+                setImageFile(null); // Reset the image file state
+                return; // Prevent further action
+            }
             setImageFile(file);
         }
     };
@@ -87,17 +121,27 @@ function Register() {
             <Typography variant="h5" sx={{ my: 2 }}>
                 Register
             </Typography>
-            <Box component="form" sx={{ maxWidth: '500px' }}
-                onSubmit={formik.handleSubmit}>
+            <Box component="form" sx={{ maxWidth: '500px' }} onSubmit={formik.handleSubmit}>
+                {/* Form Fields */}
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
-                    label="Name"
-                    name="name"
-                    value={formik.values.name}
+                    label="First Name"
+                    name="firstName"
+                    value={formik.values.firstName}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.name && Boolean(formik.errors.name)}
-                    helperText={formik.touched.name && formik.errors.name}
+                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                    helperText={formik.touched.firstName && formik.errors.firstName}
+                />
+                <TextField
+                    fullWidth margin="dense" autoComplete="off"
+                    label="Last Name"
+                    name="lastName"
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                    helperText={formik.touched.lastName && formik.errors.lastName}
                 />
                 <TextField
                     fullWidth margin="dense" autoComplete="off"
@@ -129,6 +173,47 @@ function Register() {
                     error={formik.touched.confirmPassword && Boolean(formik.errors.confirmPassword)}
                     helperText={formik.touched.confirmPassword && formik.errors.confirmPassword}
                 />
+                {/* New Fields */}
+                <TextField
+                    fullWidth margin="dense"
+                    label="Credit Card No"
+                    name="creditCardNo"
+                    value={formik.values.creditCardNo}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.creditCardNo && Boolean(formik.errors.creditCardNo)}
+                    helperText={formik.touched.creditCardNo && formik.errors.creditCardNo}
+                />
+                <TextField
+                    fullWidth margin="dense"
+                    label="Mobile No"
+                    name="mobileNo"
+                    value={formik.values.mobileNo}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.mobileNo && Boolean(formik.errors.mobileNo)}
+                    helperText={formik.touched.mobileNo && formik.errors.mobileNo}
+                />
+                <TextField
+                    fullWidth margin="dense"
+                    label="Billing Address"
+                    name="billingAddress"
+                    value={formik.values.billingAddress}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.billingAddress && Boolean(formik.errors.billingAddress)}
+                    helperText={formik.touched.billingAddress && formik.errors.billingAddress}
+                />
+                <TextField
+                    fullWidth margin="dense"
+                    label="Shipping Address"
+                    name="shippingAddress"
+                    value={formik.values.shippingAddress}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.shippingAddress && Boolean(formik.errors.shippingAddress)}
+                    helperText={formik.touched.shippingAddress && formik.errors.shippingAddress}
+                />
 
                 {/* File upload button */}
                 <Button variant="contained" component="label" sx={{ mt: 2 }}>
@@ -142,8 +227,7 @@ function Register() {
                     </Box>
                 )}
 
-                <Button fullWidth variant="contained" sx={{ mt: 2 }}
-                    type="submit">
+                <Button fullWidth variant="contained" sx={{ mt: 2 }} type="submit">
                     Register
                 </Button>
             </Box>

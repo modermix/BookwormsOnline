@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
+import Index from './pages/index';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,7 +38,6 @@ function App() {
                     BookwormsOnline
                   </Typography>
                 </Link>
-                <Link to="/form" ><Typography>Form</Typography></Link>
                 <Box sx={{ flexGrow: 1 }}></Box>
                 {user && (
                   <>
@@ -58,6 +58,7 @@ function App() {
 
           <Container>
             <Routes>
+              <Route path={"/"} element={<Index />} />
               <Route path={"/register"} element={<Register />} />
               <Route path={"/login"} element={<Login />} />
             </Routes>
